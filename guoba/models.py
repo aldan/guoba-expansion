@@ -2,9 +2,9 @@
 
 from guoba import db
 from sqlalchemy.dialects.postgresql import UUID, JSON
-from werkzeug.security import generate_password_hash
 import uuid
 from datetime import datetime
+from flask import jsonify
 
 
 class Item(db.Model):
@@ -70,13 +70,31 @@ class Base(db.Model):
     __abstract__ = True
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     date_modified = db.Column(db.DateTime, default=datetime.utcnow(), nullable=False)
-    security_key = db.Column(db.String(128))
+    password_hash = db.Column(db.String(128))
 
 
 class Collection(Base):
     __tablename__ = 'collections'
     name = db.Column(db.String(128), default='My collection', nullable=False)
-    data = db.Column(JSON, default='{}', nullable=False)
+
+    @staticmethod
+    def generate_json():
+        return jsonify({
+            'users': [],
+            'characters': {},
+            'weapons': {},
+        })
+
+    data = db.Column(JSON, default=generate_json, nullable=False)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'date_modified': self.date_modified,
+            'name': self.name,
+            'data': self.data,
+        }
 
     def __repr__(self):
         return f'<collection:{self.id}>'
