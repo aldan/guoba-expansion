@@ -4,7 +4,7 @@ from guoba import db
 from sqlalchemy.dialects.postgresql import UUID, JSON
 import uuid
 from datetime import datetime
-from flask import jsonify
+from json import dumps
 
 
 class Item(db.Model):
@@ -68,24 +68,23 @@ class Weapon(Item):
 
 class Base(db.Model):
     __abstract__ = True
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
-    date_modified = db.Column(db.DateTime, default=datetime.utcnow(), nullable=False)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    date_modified = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     password_hash = db.Column(db.String(128))
+
+
+def generate_json():
+    return dumps({
+        'users': [],
+        'characters': {},
+        'weapons': {},
+    })
 
 
 class Collection(Base):
     __tablename__ = 'collections'
     name = db.Column(db.String(128), default='My collection', nullable=False)
-
-    @staticmethod
-    def generate_json():
-        return jsonify({
-            'users': [],
-            'characters': {},
-            'weapons': {},
-        })
-
-    data = db.Column(JSON, default=generate_json, nullable=False)
+    data = db.Column(JSON(none_as_null=True), default=generate_json, nullable=False)
 
     @property
     def serialize(self):
