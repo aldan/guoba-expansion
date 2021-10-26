@@ -74,11 +74,15 @@ class Base(db.Model):
 
 
 def generate_json():
-    return dumps({
-        'users': [],
+    return {
+        'users': {
+            '0': {
+                'name': 'User',
+            }
+        },
         'characters': {},
         'weapons': {},
-    })
+    }
 
 
 class Collection(Base):
