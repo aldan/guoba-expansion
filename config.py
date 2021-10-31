@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, 'guoba', 'static')
+JSON_SCHEMA_DIR = os.path.join(STATIC_DIR, 'schema')
+
 DOTENV = os.path.join(BASE_DIR, '.env')
 load_dotenv(DOTENV)
 

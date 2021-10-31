@@ -75,11 +75,7 @@ class Base(db.Model):
 
 def generate_json():
     return {
-        'users': {
-            '0': {
-                'name': 'User',
-            }
-        },
+        'users': {},
         'characters': {},
         'weapons': {},
     }
@@ -94,7 +90,7 @@ class Collection(Base):
     def serialize(self):
         return {
             'id': self.id,
-            'date_modified': self.date_modified,
+            'date_modified': self.date_modified.timestamp(),
             'name': self.name,
             'data': self.data,
         }
